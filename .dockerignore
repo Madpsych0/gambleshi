@@ -1,0 +1,44 @@
+# Dependencies (installed fresh in container)
+node_modules
+
+# Version control
+.git
+.gitignore
+
+# Build output (built inside container)
+dist
+
+# Documentation and design files
+docs
+design-system
+GameTemplate
+
+# IDE and editor files
+.vscode
+.idea
+.gemini
+.agent
+.claude
+
+# Environment files (secrets should not be baked in)
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+*.test.mjs
+*.test.js
+*.spec.js
+
+# CI/CD and Kubernetes manifests (not needed in image)
+.github
+k8s
+serverless
+
+# Miscellaneous
+*.zip
+*.md
+vercel.json

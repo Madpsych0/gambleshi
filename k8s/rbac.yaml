@@ -1,0 +1,64 @@
+# =============================================================================
+# RBAC — ServiceAccount, Role, RoleBinding
+# =============================================================================
+# Least-privilege principle: the app ServiceAccount can only read
+# its own ConfigMaps, Secrets, and Pod status within the namespace.
+# =============================================================================
+
+---
+# ServiceAccount for the application
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gambleshi-sa
+  namespace: gambleshi
+  labels:
+    app.kubernetes.io/name: gambleshi
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/part-of: gambleshi
+  annotations:
+    openshift.io/description: "Service account for Gambleshi frontend application"
+
+---
+# Role — least-privilege access within the namespace
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: gambleshi-role
+  namespace: gambleshi
+  labels:
+    app.kubernetes.io/name: gambleshi
+    app.kubernetes.io/part-of: gambleshi
+rules:
+  # Allow reading ConfigMaps (for app configuration)
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list", "watch"]
+  # Allow reading own Secrets
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+    resourceNames: ["gambleshi-secrets"]
+  # Allow reading Pod status (for health monitoring)
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+
+---
+# RoleBinding — bind the Role to the ServiceAccount
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: gambleshi-rolebinding
+  namespace: gambleshi
+  labels:
+    app.kubernetes.io/name: gambleshi
+    app.kubernetes.io/part-of: gambleshi
+subjects:
+  - kind: ServiceAccount
+    name: gambleshi-sa
+    namespace: gambleshi
+roleRef:
+  kind: Role
+  name: gambleshi-role
+  apiGroup: rbac.authorization.k8s.io

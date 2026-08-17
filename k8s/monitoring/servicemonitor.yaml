@@ -1,0 +1,42 @@
+# =============================================================================
+# Prometheus ServiceMonitor — Scrape Nginx Metrics
+# =============================================================================
+# Tells Prometheus (via OpenShift Monitoring) to scrape the nginx stub_status
+# endpoint for request metrics.
+#
+# Prerequisites:
+#   - OpenShift Monitoring stack enabled (default in OCP 4.x)
+#   - User Workload Monitoring enabled:
+#     oc apply -f - <<EOF
+#     apiVersion: v1
+#     kind: ConfigMap
+#     metadata:
+#       name: cluster-monitoring-config
+#       namespace: openshift-monitoring
+#     data:
+#       config.yaml: |
+#         enableUserWorkload: true
+#     EOF
+# =============================================================================
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: gambleshi
+  namespace: gambleshi
+  labels:
+    app.kubernetes.io/name: gambleshi
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/part-of: gambleshi
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gambleshi
+      app.kubernetes.io/component: frontend
+  endpoints:
+    - port: http
+      path: /nginx_status
+      interval: 30s
+      scrapeTimeout: 10s
+  namespaceSelector:
+    matchNames:
+      - gambleshi

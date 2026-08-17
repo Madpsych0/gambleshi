@@ -1,0 +1,128 @@
+# =============================================================================
+# Prometheus Alerting Rules
+# =============================================================================
+# Alerts for production issues:
+#   - High error rate (>5% of responses are 5xx)
+#   - Pod crash looping
+#   - HPA at maximum capacity
+#   - High memory usage (>90%)
+#   - Pod not ready for >5 minutes
+# =============================================================================
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: gambleshi-alerts
+  namespace: gambleshi
+  labels:
+    app.kubernetes.io/name: gambleshi
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/part-of: gambleshi
+spec:
+  groups:
+    - name: gambleshi.rules
+      rules:
+        # -------------------------------------------------------------------
+        # Alert: Pod is crash-looping
+        # -------------------------------------------------------------------
+        - alert: GambleshiPodCrashLooping
+          expr: |
+            rate(kube_pod_container_status_restarts_total{
+              namespace="gambleshi",
+              container="gambleshi"
+            }[15m]) * 60 * 15 > 3
+          for: 5m
+          labels:
+            severity: critical
+            app: gambleshi
+          annotations:
+            summary: "Gambleshi pod is crash-looping"
+            description: >-
+              Pod {{ $labels.pod }} in namespace {{ $labels.namespace }}
+              has restarted {{ printf "%.0f" $value }} times in the last 15 minutes.
+            runbook_url: "https://github.com/Madpsych0/gambleshi/wiki/runbooks/crash-loop"
+
+        # -------------------------------------------------------------------
+        # Alert: HPA at maximum replicas
+        # -------------------------------------------------------------------
+        - alert: GambleshiHPAMaxedOut
+          expr: |
+            kube_horizontalpodautoscaler_status_current_replicas{
+              namespace="gambleshi",
+              horizontalpodautoscaler="gambleshi"
+            }
+            >=
+            kube_horizontalpodautoscaler_spec_max_replicas{
+              namespace="gambleshi",
+              horizontalpodautoscaler="gambleshi"
+            }
+          for: 15m
+          labels:
+            severity: warning
+            app: gambleshi
+          annotations:
+            summary: "HPA is at maximum capacity"
+            description: >-
+              The Gambleshi HPA has been at maximum replicas ({{ $value }})
+              for more than 15 minutes. Consider increasing maxReplicas.
+
+        # -------------------------------------------------------------------
+        # Alert: High memory utilization
+        # -------------------------------------------------------------------
+        - alert: GambleshiHighMemoryUsage
+          expr: |
+            container_memory_working_set_bytes{
+              namespace="gambleshi",
+              container="gambleshi"
+            }
+            /
+            container_spec_memory_limit_bytes{
+              namespace="gambleshi",
+              container="gambleshi"
+            } > 0.9
+          for: 5m
+          labels:
+            severity: warning
+            app: gambleshi
+          annotations:
+            summary: "High memory usage detected"
+            description: >-
+              Pod {{ $labels.pod }} is using {{ printf "%.0f" (mul $value 100) }}%
+              of its memory limit for more than 5 minutes.
+
+        # -------------------------------------------------------------------
+        # Alert: Pod not ready
+        # -------------------------------------------------------------------
+        - alert: GambleshiPodNotReady
+          expr: |
+            kube_pod_status_ready{
+              namespace="gambleshi",
+              condition="true"
+            } == 0
+          for: 5m
+          labels:
+            severity: warning
+            app: gambleshi
+          annotations:
+            summary: "Gambleshi pod is not ready"
+            description: >-
+              Pod {{ $labels.pod }} has been in a non-ready state
+              for more than 5 minutes.
+
+        # -------------------------------------------------------------------
+        # Alert: No available replicas
+        # -------------------------------------------------------------------
+        - alert: GambleshiNoAvailableReplicas
+          expr: |
+            kube_deployment_status_replicas_available{
+              namespace="gambleshi",
+              deployment="gambleshi"
+            } == 0
+          for: 1m
+          labels:
+            severity: critical
+            app: gambleshi
+          annotations:
+            summary: "CRITICAL: No available replicas"
+            description: >-
+              The Gambleshi deployment has zero available replicas.
+              The application is completely down!

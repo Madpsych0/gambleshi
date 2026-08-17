@@ -1,0 +1,78 @@
+# =============================================================================
+# Knative Eventing — Trigger for Game Events
+# =============================================================================
+# Routes CloudEvents from the default broker to the game-event-handler
+# based on event type prefix "game.*"
+#
+# Prerequisites:
+#   1. OpenShift Serverless Operator installed
+#   2. Knative Eventing enabled
+#   3. Default broker created:
+#      oc apply -f - <<EOF
+#      apiVersion: eventing.knative.dev/v1
+#      kind: Broker
+#      metadata:
+#        name: default
+#        namespace: gambleshi
+#      EOF
+# =============================================================================
+
+---
+# Trigger: game.bet.placed events
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: game-bet-placed-trigger
+  namespace: gambleshi
+  labels:
+    app.kubernetes.io/part-of: gambleshi
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: game.bet.placed
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: game-event-handler
+
+---
+# Trigger: game.result events
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: game-result-trigger
+  namespace: gambleshi
+  labels:
+    app.kubernetes.io/part-of: gambleshi
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: game.result
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: game-event-handler
+
+---
+# Trigger: game.payout events
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: game-payout-trigger
+  namespace: gambleshi
+  labels:
+    app.kubernetes.io/part-of: gambleshi
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: game.payout
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: game-event-handler

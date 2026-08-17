@@ -1,0 +1,14 @@
+# =============================================================================
+# OpenShift Namespace / Project
+# =============================================================================
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gambleshi
+  labels:
+    app.kubernetes.io/name: gambleshi
+    app.kubernetes.io/part-of: gambleshi
+    app.kubernetes.io/managed-by: kubectl
+  annotations:
+    openshift.io/display-name: "Gambleshi Casino Games"
+    openshift.io/description: "Production namespace for the Gambleshi casino games frontend application"

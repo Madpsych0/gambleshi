@@ -1,0 +1,240 @@
+# =============================================================================
+# Grafana Dashboard — ConfigMap
+# =============================================================================
+# This ConfigMap contains a Grafana dashboard JSON for monitoring the
+# Gambleshi application. Import it into Grafana via the UI or auto-load
+# via the Grafana sidecar (if using grafana-operator).
+#
+# Dashboard panels:
+#   - Pod CPU Usage
+#   - Pod Memory Usage
+#   - Active Connections (Nginx)
+#   - Total Requests (Nginx)
+#   - Pod Restart Count
+#   - HPA Replica Count
+#   - Pod Readiness Status
+#   - Container Network I/O
+# =============================================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gambleshi-grafana-dashboard
+  namespace: gambleshi
+  labels:
+    app.kubernetes.io/name: gambleshi
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/part-of: gambleshi
+    # Label for Grafana sidecar auto-discovery
+    grafana_dashboard: "true"
+data:
+  gambleshi-dashboard.json: |
+    {
+      "annotations": {
+        "list": [
+          {
+            "datasource": "-- Grafana --",
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "description": "Gambleshi Casino Games — Production Monitoring Dashboard",
+      "editable": true,
+      "gnetId": null,
+      "graphTooltip": 1,
+      "id": null,
+      "links": [],
+      "panels": [
+        {
+          "title": "🔥 Pod CPU Usage",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"gambleshi\", container=\"gambleshi\"}[5m])) by (pod)",
+              "legendFormat": "{{ pod }}"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "custom": {
+                "fillOpacity": 20,
+                "lineWidth": 2,
+                "spanNulls": true
+              }
+            }
+          }
+        },
+        {
+          "title": "💾 Pod Memory Usage",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "container_memory_working_set_bytes{namespace=\"gambleshi\", container=\"gambleshi\"}",
+              "legendFormat": "{{ pod }}"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "custom": {
+                "fillOpacity": 20,
+                "lineWidth": 2,
+                "spanNulls": true
+              }
+            }
+          }
+        },
+        {
+          "title": "🌐 Nginx Active Connections",
+          "type": "stat",
+          "gridPos": { "h": 4, "w": 6, "x": 0, "y": 8 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "sum(nginx_connections_active{namespace=\"gambleshi\"})"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 50 },
+                  { "color": "red", "value": 100 }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "title": "📊 Total Requests (rate/min)",
+          "type": "stat",
+          "gridPos": { "h": 4, "w": 6, "x": 6, "y": 8 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "sum(rate(nginx_connections_handled{namespace=\"gambleshi\"}[5m])) * 60"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 500 },
+                  { "color": "red", "value": 1000 }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "title": "🔄 Pod Restarts",
+          "type": "stat",
+          "gridPos": { "h": 4, "w": 6, "x": 12, "y": 8 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "sum(kube_pod_container_status_restarts_total{namespace=\"gambleshi\", container=\"gambleshi\"}) by (pod)",
+              "legendFormat": "{{ pod }}"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 3 },
+                  { "color": "red", "value": 10 }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "title": "📈 HPA Replica Count",
+          "type": "timeseries",
+          "gridPos": { "h": 4, "w": 6, "x": 18, "y": 8 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "kube_horizontalpodautoscaler_status_current_replicas{namespace=\"gambleshi\", horizontalpodautoscaler=\"gambleshi\"}",
+              "legendFormat": "Current Replicas"
+            },
+            {
+              "expr": "kube_horizontalpodautoscaler_spec_max_replicas{namespace=\"gambleshi\", horizontalpodautoscaler=\"gambleshi\"}",
+              "legendFormat": "Max Replicas"
+            },
+            {
+              "expr": "kube_horizontalpodautoscaler_spec_min_replicas{namespace=\"gambleshi\", horizontalpodautoscaler=\"gambleshi\"}",
+              "legendFormat": "Min Replicas"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "fillOpacity": 10,
+                "lineWidth": 2
+              }
+            }
+          }
+        },
+        {
+          "title": "✅ Pod Readiness",
+          "type": "table",
+          "gridPos": { "h": 6, "w": 12, "x": 0, "y": 12 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "kube_pod_status_ready{namespace=\"gambleshi\", condition=\"true\"}",
+              "legendFormat": "{{ pod }}",
+              "instant": true
+            }
+          ]
+        },
+        {
+          "title": "🌍 Network I/O (bytes/sec)",
+          "type": "timeseries",
+          "gridPos": { "h": 6, "w": 12, "x": 12, "y": 12 },
+          "datasource": "Prometheus",
+          "targets": [
+            {
+              "expr": "sum(rate(container_network_receive_bytes_total{namespace=\"gambleshi\"}[5m])) by (pod)",
+              "legendFormat": "RX: {{ pod }}"
+            },
+            {
+              "expr": "sum(rate(container_network_transmit_bytes_total{namespace=\"gambleshi\"}[5m])) by (pod)",
+              "legendFormat": "TX: {{ pod }}"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "Bps",
+              "custom": {
+                "fillOpacity": 15,
+                "lineWidth": 2
+              }
+            }
+          }
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 36,
+      "style": "dark",
+      "tags": ["gambleshi", "frontend", "nginx", "openshift"],
+      "templating": { "list": [] },
+      "time": { "from": "now-1h", "to": "now" },
+      "timepicker": {},
+      "timezone": "browser",
+      "title": "Gambleshi - Production Dashboard",
+      "uid": "gambleshi-prod",
+      "version": 1
+    }

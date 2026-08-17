@@ -1,0 +1,168 @@
+# =============================================================================
+# Gambleshi Deployment
+# =============================================================================
+# - 3 replicas for High Availability
+# - Rolling update strategy for zero-downtime deploys
+# - Liveness, Readiness, and Startup probes
+# - Security context: non-root, read-only FS, no privilege escalation
+# - Pod anti-affinity to spread replicas across nodes
+# =============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gambleshi
+  namespace: gambleshi
+  labels:
+    app.kubernetes.io/name: gambleshi
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/part-of: gambleshi
+    app.kubernetes.io/version: "1.0.0"
+spec:
+  replicas: 3
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gambleshi
+      app.kubernetes.io/component: frontend
+  # --------------------------------------------------------------------------
+  # Rolling Update Strategy — zero downtime
+  # --------------------------------------------------------------------------
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: gambleshi
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/part-of: gambleshi
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/nginx_status"
+    spec:
+      serviceAccountName: gambleshi-sa
+      terminationGracePeriodSeconds: 30
+      # ----------------------------------------------------------------------
+      # Security Context (Pod level)
+      # ----------------------------------------------------------------------
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      # ----------------------------------------------------------------------
+      # Pod Anti-Affinity — spread replicas across nodes
+      # ----------------------------------------------------------------------
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - gambleshi
+                topologyKey: kubernetes.io/hostname
+      containers:
+        - name: gambleshi
+          # Image placeholder — replaced by CI/CD pipeline with actual tag
+          image: IMAGE_PLACEHOLDER
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          # ------------------------------------------------------------------
+          # Resource Requests & Limits
+          # ------------------------------------------------------------------
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+          # ------------------------------------------------------------------
+          # Container Security Context
+          # ------------------------------------------------------------------
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          # ------------------------------------------------------------------
+          # Startup Probe — gives the container time to start up
+          # Checks every 5s, up to 12 times (60s total to start)
+          # ------------------------------------------------------------------
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 0
+            periodSeconds: 5
+            failureThreshold: 12
+            timeoutSeconds: 3
+          # ------------------------------------------------------------------
+          # Liveness Probe — restart container if it's stuck
+          # ------------------------------------------------------------------
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            failureThreshold: 3
+            timeoutSeconds: 5
+          # ------------------------------------------------------------------
+          # Readiness Probe — only route traffic when ready
+          # ------------------------------------------------------------------
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 3
+          # ------------------------------------------------------------------
+          # Environment Variables from ConfigMap and Secrets
+          # ------------------------------------------------------------------
+          envFrom:
+            - configMapRef:
+                name: gambleshi-config
+          env:
+            - name: APP_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gambleshi-secrets
+                  key: app-secret-key
+                  optional: true
+          # ------------------------------------------------------------------
+          # Volume Mounts — writable temp directories for nginx
+          # ------------------------------------------------------------------
+          volumeMounts:
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
+            - name: nginx-run
+              mountPath: /var/run
+            - name: nginx-logs
+              mountPath: /var/log/nginx
+      # ----------------------------------------------------------------------
+      # Volumes — emptyDir for writable temp paths (readOnlyRootFilesystem)
+      # ----------------------------------------------------------------------
+      volumes:
+        - name: nginx-cache
+          emptyDir: {}
+        - name: nginx-run
+          emptyDir:
+            medium: Memory
+            sizeLimit: 5Mi
+        - name: nginx-logs
+          emptyDir:
+            sizeLimit: 50Mi

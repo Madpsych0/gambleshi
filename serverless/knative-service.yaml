@@ -1,0 +1,56 @@
+# =============================================================================
+# Knative Service — Game Event Handler (Serverless)
+# =============================================================================
+# Scales to zero when idle, auto-scales up to 5 replicas under load.
+# Requires OpenShift Serverless Operator (Knative Serving) installed.
+# =============================================================================
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: game-event-handler
+  namespace: gambleshi
+  labels:
+    app.kubernetes.io/name: game-event-handler
+    app.kubernetes.io/component: serverless
+    app.kubernetes.io/part-of: gambleshi
+spec:
+  template:
+    metadata:
+      annotations:
+        # Scale to zero after 5 minutes of inactivity
+        autoscaling.knative.dev/scale-to-zero-pod-retention-period: "5m"
+        # Target 10 concurrent requests per pod
+        autoscaling.knative.dev/target: "10"
+        # Maximum replicas
+        autoscaling.knative.dev/max-scale: "5"
+        # Minimum replicas (0 = scale to zero)
+        autoscaling.knative.dev/min-scale: "0"
+    spec:
+      containerConcurrency: 10
+      timeoutSeconds: 30
+      containers:
+        - # Replace with your actual registry/image
+          image: quay.io/YOUR_USERNAME/game-event-handler:latest
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          env:
+            - name: NODE_ENV
+              value: "production"
+          livenessProbe:
+            httpGet:
+              path: /health
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+            initialDelaySeconds: 3
+            periodSeconds: 5

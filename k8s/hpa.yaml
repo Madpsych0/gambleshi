@@ -1,0 +1,57 @@
+# =============================================================================
+# Horizontal Pod Autoscaler
+# =============================================================================
+# Automatically scales pods between 3-10 based on CPU and memory utilization.
+# Scale-down stabilization prevents flapping during traffic spikes.
+# =============================================================================
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: gambleshi
+  namespace: gambleshi
+  labels:
+    app.kubernetes.io/name: gambleshi
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/part-of: gambleshi
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: gambleshi
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+    # Scale up when average CPU utilization exceeds 70%
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    # Scale up when average memory utilization exceeds 80%
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
+  behavior:
+    # Scale up quickly (allow doubling every 60s)
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 60
+        - type: Pods
+          value: 2
+          periodSeconds: 60
+      selectPolicy: Max
+    # Scale down conservatively (stabilize for 5 minutes)
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 120
+      selectPolicy: Min

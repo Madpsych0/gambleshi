@@ -1,0 +1,36 @@
+# =============================================================================
+# OpenShift Route — External access with TLS
+# =============================================================================
+# Edge TLS termination: OpenShift router handles HTTPS, forwards HTTP to pods.
+# HTTP requests are automatically redirected to HTTPS.
+# =============================================================================
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: gambleshi
+  namespace: gambleshi
+  labels:
+    app.kubernetes.io/name: gambleshi
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/part-of: gambleshi
+  annotations:
+    # Load balancing strategy across pods
+    haproxy.router.openshift.io/balance: roundrobin
+    # Disable buffering for faster response streaming
+    haproxy.router.openshift.io/disable_cookies: "true"
+    # Connection timeout settings
+    haproxy.router.openshift.io/timeout: 60s
+spec:
+  # Host is auto-assigned by OpenShift if left empty.
+  # Uncomment and set to use a custom domain:
+  # host: gambleshi.apps.your-cluster.example.com
+  to:
+    kind: Service
+    name: gambleshi
+    weight: 100
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None

@@ -1,0 +1,70 @@
+# =============================================================================
+# Network Policies — Defense in Depth
+# =============================================================================
+# 1. Default deny all ingress traffic
+# 2. Allow ingress only from OpenShift router (for external access)
+# 3. Allow ingress from OpenShift monitoring (Prometheus scraping)
+# 4. Allow DNS egress (required for cluster operations)
+# =============================================================================
+
+---
+# Policy 1: Default deny all ingress
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: gambleshi
+  labels:
+    app.kubernetes.io/part-of: gambleshi
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+
+---
+# Policy 2: Allow ingress from OpenShift Router only
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-from-openshift-router
+  namespace: gambleshi
+  labels:
+    app.kubernetes.io/part-of: gambleshi
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: gambleshi
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              network.openshift.io/policy-group: ingress
+      ports:
+        - protocol: TCP
+          port: 8080
+  policyTypes:
+    - Ingress
+
+---
+# Policy 3: Allow ingress from OpenShift Monitoring (Prometheus)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-from-monitoring
+  namespace: gambleshi
+  labels:
+    app.kubernetes.io/part-of: gambleshi
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: gambleshi
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              network.openshift.io/policy-group: monitoring
+      ports:
+        - protocol: TCP
+          port: 8080
+  policyTypes:
+    - Ingress

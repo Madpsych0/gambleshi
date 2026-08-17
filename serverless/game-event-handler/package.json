@@ -1,0 +1,14 @@
+{
+  "name": "game-event-handler",
+  "version": "1.0.0",
+  "description": "Serverless function to process game events (bets, results, payouts)",
+  "main": "handler.js",
+  "type": "module",
+  "scripts": {
+    "start": "node handler.js",
+    "test": "echo \"Tests pending\" && exit 0"
+  },
+  "dependencies": {
+    "cloudevents": "^8.0.0"
+  }
+}

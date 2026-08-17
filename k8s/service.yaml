@@ -1,0 +1,29 @@
+# =============================================================================
+# Gambleshi Service — Load Balancing across replicas
+# =============================================================================
+# ClusterIP Service distributes traffic evenly across all healthy pods.
+# OpenShift Route connects to this Service for external access.
+# =============================================================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: gambleshi
+  namespace: gambleshi
+  labels:
+    app.kubernetes.io/name: gambleshi
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/part-of: gambleshi
+  annotations:
+    description: "Load-balanced service for Gambleshi frontend pods"
+spec:
+  type: ClusterIP
+  # Session affinity disabled — stateless SPA, round-robin is ideal
+  sessionAffinity: None
+  selector:
+    app.kubernetes.io/name: gambleshi
+    app.kubernetes.io/component: frontend
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP

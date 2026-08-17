@@ -1,0 +1,26 @@
+# =============================================================================
+# Application ConfigMap
+# =============================================================================
+# Non-sensitive configuration values injected as environment variables.
+# =============================================================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gambleshi-config
+  namespace: gambleshi
+  labels:
+    app.kubernetes.io/name: gambleshi
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/part-of: gambleshi
+data:
+  # Application environment
+  NODE_ENV: "production"
+  # Application name
+  APP_NAME: "Gambleshi Casino Games"
+  # Feature flags
+  FEATURE_CRASH_GAME: "true"
+  FEATURE_PLINKO_GAME: "true"
+  FEATURE_DINO_GAME: "true"
+  FEATURE_MINES_GAME: "true"
+  # Logging level
+  LOG_LEVEL: "warn"

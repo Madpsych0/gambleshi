@@ -1,0 +1,32 @@
+# =============================================================================
+# Persistent Volume Claim (Optional)
+# =============================================================================
+# Use this if you need persistent storage for game data, logs, or user data.
+# For a purely stateless frontend SPA, this PVC is not required.
+#
+# To attach to deployment, add this volume mount:
+#   volumeMounts:
+#     - name: game-data
+#       mountPath: /data
+#   volumes:
+#     - name: game-data
+#       persistentVolumeClaim:
+#         claimName: gambleshi-data
+# =============================================================================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gambleshi-data
+  namespace: gambleshi
+  labels:
+    app.kubernetes.io/name: gambleshi
+    app.kubernetes.io/component: storage
+    app.kubernetes.io/part-of: gambleshi
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  # Uses the default StorageClass. To specify a class, uncomment:
+  # storageClassName: gp3-csi
