@@ -29,24 +29,33 @@ Complete guide to deploy the Gambleshi casino games application on OpenShift wit
 | `git` | Version control | You already have this |
 
 > **Note**: Docker is **NOT** required on your PC. All container builds happen in GitHub Actions.
+> Node.js 22 LTS is used in all Dockerfiles and CI/CD. Node 20 is deprecated on GitHub Actions runners.
 
 ### Accounts
 
-| Service | Purpose |
-|---------|---------|
-| **OpenShift cluster** | Target deployment platform |
-| **Quay.io** (or Docker Hub / GHCR) | Container image registry |
-| **GitHub** | CI/CD pipeline (your repo: `Madpsych0/gambleshi`) |
+| Service | Purpose | Sign Up |
+|---------|---------|---------|
+| **OpenShift cluster** | Target deployment platform | [Red Hat Developer Sandbox (free)](https://developers.redhat.com/developer-sandbox) |
+| **Quay.io** | Container image registry | [quay.io](https://quay.io/) (free, sign up with Red Hat account) |
+| **GitHub** | CI/CD pipeline | Your repo: `Madpsych0/gambleshi` |
 
-### Install the `oc` CLI
+### Step-by-Step: Install the `oc` CLI (Windows)
 
 ```powershell
-# Windows — download and extract
-# 1. Go to https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/
-# 2. Download openshift-client-windows-*.zip
-# 3. Extract oc.exe to a directory in your PATH
+# 1. Download the latest OpenShift client
+#    Go to: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/
+#    Download: openshift-client-windows-<version>.zip
 
-# Verify installation
+# 2. Extract the zip file (contains oc.exe and kubectl.exe)
+
+# 3. Move oc.exe to a folder that's in your PATH, for example:
+mkdir -Force "$env:USERPROFILE\bin"
+Move-Item oc.exe "$env:USERPROFILE\bin\oc.exe"
+
+# 4. Add to PATH (if not already there) — run in PowerShell as Admin:
+[Environment]::SetEnvironmentVariable("Path", $env:Path + ";$env:USERPROFILE\bin", "User")
+
+# 5. Restart your terminal, then verify:
 oc version
 ```
 
