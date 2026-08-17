@@ -11,7 +11,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gambleshi
-  namespace: gambleshi
+  namespace: navaneethfr-dev
   labels:
     app.kubernetes.io/name: gambleshi
     app.kubernetes.io/component: frontend

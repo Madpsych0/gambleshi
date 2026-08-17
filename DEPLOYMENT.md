@@ -76,10 +76,10 @@ oc login --token=YOUR_TOKEN --server=https://api.your-cluster.example.com:6443
 
 ```bash
 # Create the gambleshi namespace
-oc new-project gambleshi
+# (not needed on Sandbox � project already exists)
 
 # Or if it already exists
-oc project gambleshi
+oc project navaneethfr-dev
 ```
 
 ### 2.3 Create Secrets
@@ -88,17 +88,17 @@ oc project gambleshi
 # App secrets (replace with real values)
 oc create secret generic gambleshi-secrets \
   --from-literal=app-secret-key='your-super-secret-key-here' \
-  -n gambleshi
+  -n navaneethfr-dev
 
 # Image pull secret (if using a private registry)
 oc create secret docker-registry gambleshi-pull-secret \
   --docker-server=quay.io \
   --docker-username=YOUR_USERNAME \
   --docker-password=YOUR_PASSWORD \
-  -n gambleshi
+  -n navaneethfr-dev
 
 # Link the pull secret to the service account
-oc secrets link gambleshi-sa gambleshi-pull-secret --for=pull -n gambleshi
+oc secrets link gambleshi-sa gambleshi-pull-secret --for=pull -n navaneethfr-dev
 ```
 
 ---
@@ -114,13 +114,13 @@ oc secrets link gambleshi-sa gambleshi-pull-secret --for=pull -n gambleshi
 oc new-build --name=gambleshi \
   --binary=true \
   --strategy=docker \
-  -n gambleshi
+  -n navaneethfr-dev
 
 # Start a build from your local source
 oc start-build gambleshi \
   --from-dir=. \
   --follow \
-  -n gambleshi
+  -n navaneethfr-dev
 ```
 
 ### Option B: Build via GitHub Actions (recommended)
@@ -178,16 +178,16 @@ oc apply -f k8s/pdb.yaml
 
 ```bash
 # Watch pods come up
-oc get pods -n gambleshi -w
+oc get pods -n navaneethfr-dev -w
 
 # Check deployment status
-oc rollout status deployment/gambleshi -n gambleshi
+oc rollout status deployment/gambleshi -n navaneethfr-dev
 
 # Get the app URL
-oc get route gambleshi -n gambleshi -o jsonpath='{.spec.host}'
+oc get route gambleshi -n navaneethfr-dev -o jsonpath='{.spec.host}'
 
 # Test the health endpoint
-curl -k https://$(oc get route gambleshi -n gambleshi -o jsonpath='{.spec.host}')/healthz
+curl -k https://$(oc get route gambleshi -n navaneethfr-dev -o jsonpath='{.spec.host}')/healthz
 ```
 
 ### 4.3 Quick Apply Script
@@ -226,13 +226,13 @@ Go to your GitHub repo → **Settings** → **Secrets and variables** → **Acti
 
 ```bash
 # Create a service account for CI/CD
-oc create sa github-actions -n gambleshi
+oc create sa github-actions -n navaneethfr-dev
 
 # Grant it edit permissions
-oc adm policy add-role-to-user edit system:serviceaccount:gambleshi:github-actions -n gambleshi
+oc adm policy add-role-to-user edit system:serviceaccount:gambleshi:github-actions -n navaneethfr-dev
 
 # Get the token
-oc create token github-actions -n gambleshi --duration=8760h
+oc create token github-actions -n navaneethfr-dev --duration=8760h
 ```
 
 Copy the output token and save it as the `OPENSHIFT_TOKEN` GitHub secret.
@@ -282,12 +282,12 @@ oc new-build --name=game-event-handler \
   --binary=true \
   --strategy=docker \
   --context-dir=serverless/game-event-handler \
-  -n gambleshi
+  -n navaneethfr-dev
 
 oc start-build game-event-handler \
   --from-dir=serverless/game-event-handler \
   --follow \
-  -n gambleshi
+  -n navaneethfr-dev
 ```
 
 ### 6.3 Deploy Knative Service
@@ -303,7 +303,7 @@ apiVersion: eventing.knative.dev/v1
 kind: Broker
 metadata:
   name: default
-  namespace: gambleshi
+  namespace: navaneethfr-dev
 EOF
 
 # Apply event triggers
@@ -314,11 +314,11 @@ oc apply -f serverless/knative-trigger.yaml
 
 ```bash
 # Get the Knative service URL
-oc get ksvc game-event-handler -n gambleshi
+oc get ksvc game-event-handler -n navaneethfr-dev
 
 # Send a test CloudEvent
 curl -X POST \
-  $(oc get ksvc game-event-handler -n gambleshi -o jsonpath='{.status.url}') \
+  $(oc get ksvc game-event-handler -n navaneethfr-dev -o jsonpath='{.status.url}') \
   -H "Content-Type: application/json" \
   -H "Ce-Id: test-001" \
   -H "Ce-Specversion: 1.0" \
@@ -390,47 +390,47 @@ Run this checklist after deployment:
 
 ```bash
 echo "=== 1. Pods Running ==="
-oc get pods -n gambleshi
+oc get pods -n navaneethfr-dev
 
 echo ""
 echo "=== 2. Deployment Status ==="
-oc rollout status deployment/gambleshi -n gambleshi
+oc rollout status deployment/gambleshi -n navaneethfr-dev
 
 echo ""
 echo "=== 3. Service ==="
-oc get svc gambleshi -n gambleshi
+oc get svc gambleshi -n navaneethfr-dev
 
 echo ""
 echo "=== 4. Route (TLS) ==="
-oc get route gambleshi -n gambleshi
+oc get route gambleshi -n navaneethfr-dev
 
 echo ""
 echo "=== 5. HPA ==="
-oc get hpa gambleshi -n gambleshi
+oc get hpa gambleshi -n navaneethfr-dev
 
 echo ""
 echo "=== 6. PDB ==="
-oc get pdb gambleshi -n gambleshi
+oc get pdb gambleshi -n navaneethfr-dev
 
 echo ""
 echo "=== 7. Network Policies ==="
-oc get networkpolicy -n gambleshi
+oc get networkpolicy -n navaneethfr-dev
 
 echo ""
 echo "=== 8. RBAC ==="
-oc get sa,role,rolebinding -n gambleshi
+oc get sa,role,rolebinding -n navaneethfr-dev
 
 echo ""
 echo "=== 9. Serverless ==="
-oc get ksvc -n gambleshi 2>/dev/null || echo "Knative not configured"
+oc get ksvc -n navaneethfr-dev 2>/dev/null || echo "Knative not configured"
 
 echo ""
 echo "=== 10. Monitoring ==="
-oc get servicemonitor,prometheusrule -n gambleshi
+oc get servicemonitor,prometheusrule -n navaneethfr-dev
 
 echo ""
 echo "=== 11. Health Check ==="
-ROUTE=$(oc get route gambleshi -n gambleshi -o jsonpath='{.spec.host}')
+ROUTE=$(oc get route gambleshi -n navaneethfr-dev -o jsonpath='{.spec.host}')
 echo "App URL: https://${ROUTE}"
 curl -sk "https://${ROUTE}/healthz"
 ```
@@ -445,47 +445,47 @@ curl -sk "https://${ROUTE}/healthz"
 # Trigger a new deployment (e.g., after pushing new image)
 oc set image deployment/gambleshi \
   gambleshi=quay.io/YOUR_USERNAME/gambleshi:NEW_TAG \
-  -n gambleshi
+  -n navaneethfr-dev
 
 # Watch the rolling update
-oc rollout status deployment/gambleshi -n gambleshi
+oc rollout status deployment/gambleshi -n navaneethfr-dev
 
 # Rollback if something goes wrong
-oc rollout undo deployment/gambleshi -n gambleshi
+oc rollout undo deployment/gambleshi -n navaneethfr-dev
 ```
 
 ### Scaling
 
 ```bash
 # Manual scale (HPA will override within its range)
-oc scale deployment/gambleshi --replicas=5 -n gambleshi
+oc scale deployment/gambleshi --replicas=5 -n navaneethfr-dev
 
 # Check HPA status
-oc get hpa gambleshi -n gambleshi
-oc describe hpa gambleshi -n gambleshi
+oc get hpa gambleshi -n navaneethfr-dev
+oc describe hpa gambleshi -n navaneethfr-dev
 ```
 
 ### Viewing Logs
 
 ```bash
 # Logs from all pods
-oc logs -l app.kubernetes.io/name=gambleshi -n gambleshi --tail=100
+oc logs -l app.kubernetes.io/name=gambleshi -n navaneethfr-dev --tail=100
 
 # Logs from a specific pod
-oc logs gambleshi-xxxxx -n gambleshi
+oc logs gambleshi-xxxxx -n navaneethfr-dev
 
 # Follow logs in real-time
-oc logs -f deployment/gambleshi -n gambleshi
+oc logs -f deployment/gambleshi -n navaneethfr-dev
 ```
 
 ### Update ConfigMap
 
 ```bash
 # Edit the ConfigMap
-oc edit configmap gambleshi-config -n gambleshi
+oc edit configmap gambleshi-config -n navaneethfr-dev
 
 # Restart pods to pick up changes (rolling restart)
-oc rollout restart deployment/gambleshi -n gambleshi
+oc rollout restart deployment/gambleshi -n navaneethfr-dev
 ```
 
 ---
@@ -496,11 +496,11 @@ oc rollout restart deployment/gambleshi -n gambleshi
 
 ```bash
 # Check pod events
-oc describe pod <pod-name> -n gambleshi
+oc describe pod <pod-name> -n navaneethfr-dev
 
 # Common issues:
 # - ImagePullBackOff → check pull secret and image name
-# - CrashLoopBackOff → check logs: oc logs <pod> -n gambleshi
+# - CrashLoopBackOff → check logs: oc logs <pod> -n navaneethfr-dev
 # - Pending → check resources: oc describe node
 ```
 
@@ -508,36 +508,36 @@ oc describe pod <pod-name> -n gambleshi
 
 ```bash
 # Verify route exists and has a host
-oc get route gambleshi -n gambleshi -o yaml
+oc get route gambleshi -n navaneethfr-dev -o yaml
 
 # Check if TLS is configured
-oc get route gambleshi -n gambleshi -o jsonpath='{.spec.tls}'
+oc get route gambleshi -n navaneethfr-dev -o jsonpath='{.spec.tls}'
 
 # Check NetworkPolicy isn't blocking
-oc get networkpolicy -n gambleshi
+oc get networkpolicy -n navaneethfr-dev
 ```
 
 ### HPA Not Scaling
 
 ```bash
 # Check HPA status
-oc describe hpa gambleshi -n gambleshi
+oc describe hpa gambleshi -n navaneethfr-dev
 
 # Verify metrics server is running
 oc get pods -n openshift-monitoring | grep metrics
 
 # Check if resource requests are set (HPA requires them)
-oc get deployment gambleshi -n gambleshi -o jsonpath='{.spec.template.spec.containers[0].resources}'
+oc get deployment gambleshi -n navaneethfr-dev -o jsonpath='{.spec.template.spec.containers[0].resources}'
 ```
 
 ### Monitoring Not Working
 
 ```bash
 # Check if ServiceMonitor is picked up
-oc get servicemonitor -n gambleshi
+oc get servicemonitor -n navaneethfr-dev
 
 # Check Prometheus targets
-# OpenShift Console → Observe → Targets → Filter by namespace "gambleshi"
+# OpenShift Console → Observe → Targets → Filter by namespace "navaneethfr-dev"
 
 # Verify user workload monitoring is enabled
 oc get pods -n openshift-user-workload-monitoring

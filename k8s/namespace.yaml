@@ -1,10 +1,14 @@
 # =============================================================================
 # OpenShift Namespace / Project
 # =============================================================================
+# NOTE: On Red Hat Developer Sandbox, your project is pre-created.
+# You do NOT need to apply this file. It's kept for reference only.
+# Your project: navaneethfr-dev
+# =============================================================================
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: gambleshi
+  name: navaneethfr-dev
   labels:
     app.kubernetes.io/name: gambleshi
     app.kubernetes.io/part-of: gambleshi

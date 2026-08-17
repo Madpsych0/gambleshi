@@ -19,7 +19,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: gambleshi-grafana-dashboard
-  namespace: gambleshi
+  namespace: navaneethfr-dev
   labels:
     app.kubernetes.io/name: gambleshi
     app.kubernetes.io/component: monitoring

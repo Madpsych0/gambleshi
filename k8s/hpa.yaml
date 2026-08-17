@@ -8,7 +8,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: gambleshi
-  namespace: gambleshi
+  namespace: navaneethfr-dev
   labels:
     app.kubernetes.io/name: gambleshi
     app.kubernetes.io/component: frontend

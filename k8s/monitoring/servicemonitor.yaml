@@ -22,7 +22,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: gambleshi
-  namespace: gambleshi
+  namespace: navaneethfr-dev
   labels:
     app.kubernetes.io/name: gambleshi
     app.kubernetes.io/component: monitoring

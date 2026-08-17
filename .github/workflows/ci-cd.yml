@@ -123,9 +123,9 @@ jobs:
                    --server=${{ secrets.OPENSHIFT_SERVER }} \
                    --insecure-skip-tls-verify=true
 
-      - name: Create/switch to project
+      - name: Switch to project
         run: |
-          oc project gambleshi || oc new-project gambleshi
+          oc project navaneethfr-dev
 
       - name: Update image tag in deployment
         run: |
@@ -134,8 +134,7 @@ jobs:
 
       - name: Apply Kubernetes manifests
         run: |
-          # Apply in dependency order
-          oc apply -f k8s/namespace.yaml
+          # Apply in dependency order (skip namespace.yaml — project already exists on Sandbox)
           oc apply -f k8s/configmap.yaml
           oc apply -f k8s/rbac.yaml
           oc apply -f k8s/networkpolicy.yaml
@@ -147,23 +146,23 @@ jobs:
 
       - name: Wait for rollout
         run: |
-          oc rollout status deployment/gambleshi -n gambleshi --timeout=300s
+          oc rollout status deployment/gambleshi -n navaneethfr-dev --timeout=300s
 
       - name: Verify deployment
         run: |
           echo "=== Pods ==="
-          oc get pods -n gambleshi
+          oc get pods -n navaneethfr-dev
           echo ""
           echo "=== Route ==="
-          oc get route gambleshi -n gambleshi -o jsonpath='{.spec.host}'
+          oc get route gambleshi -n navaneethfr-dev -o jsonpath='{.spec.host}'
           echo ""
           echo ""
           echo "=== HPA ==="
-          oc get hpa -n gambleshi
+          oc get hpa -n navaneethfr-dev
 
       - name: Smoke test
         run: |
-          ROUTE_HOST=$(oc get route gambleshi -n gambleshi -o jsonpath='{.spec.host}')
+          ROUTE_HOST=$(oc get route gambleshi -n navaneethfr-dev -o jsonpath='{.spec.host}')
           echo "Testing https://${ROUTE_HOST}/healthz"
           for i in 1 2 3 4 5; do
             if curl -sf "https://${ROUTE_HOST}/healthz" -o /dev/null; then
@@ -175,3 +174,4 @@ jobs:
           done
           echo "Smoke test failed after 5 attempts"
           exit 1
+

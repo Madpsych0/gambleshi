@@ -13,7 +13,7 @@
 #      kind: Broker
 #      metadata:
 #        name: default
-#        namespace: gambleshi
+#        namespace: navaneethfr-dev
 #      EOF
 # =============================================================================
 
@@ -23,7 +23,7 @@ apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: game-bet-placed-trigger
-  namespace: gambleshi
+  namespace: navaneethfr-dev
   labels:
     app.kubernetes.io/part-of: gambleshi
 spec:
@@ -43,7 +43,7 @@ apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: game-result-trigger
-  namespace: gambleshi
+  namespace: navaneethfr-dev
   labels:
     app.kubernetes.io/part-of: gambleshi
 spec:
@@ -63,7 +63,7 @@ apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: game-payout-trigger
-  namespace: gambleshi
+  namespace: navaneethfr-dev
   labels:
     app.kubernetes.io/part-of: gambleshi
 spec:

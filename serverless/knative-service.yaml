@@ -8,7 +8,7 @@ apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name: game-event-handler
-  namespace: gambleshi
+  namespace: navaneethfr-dev
   labels:
     app.kubernetes.io/name: game-event-handler
     app.kubernetes.io/component: serverless
