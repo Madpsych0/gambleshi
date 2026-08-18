@@ -95,7 +95,18 @@ jobs:
             echo "BuildConfig already exists, skipping creation"
           fi
 
-      - name: Build image on OpenShift
+      - name: Create game-event-handler BuildConfig (first run only)
+        run: |
+          if ! oc get bc game-event-handler -n navaneethfr-dev &>/dev/null; then
+            oc new-build --name=game-event-handler \
+              --binary=true \
+              --strategy=docker \
+              -n navaneethfr-dev
+          else
+            echo "BuildConfig already exists, skipping creation"
+          fi
+
+      - name: Build main app image on OpenShift
         run: |
           oc start-build gambleshi \
             --from-dir=. \
@@ -103,12 +114,23 @@ jobs:
             --wait \
             -n navaneethfr-dev
 
-      - name: Update image tag in deployment
+      - name: Build game-event-handler image on OpenShift
         run: |
-          # Get the internal registry image reference
-          IMAGE=$(oc get istag gambleshi:latest -n navaneethfr-dev -o jsonpath='{.image.dockerImageReference}')
-          echo "Built image: ${IMAGE}"
-          sed -i "s|IMAGE_PLACEHOLDER|${IMAGE}|g" k8s/deployment.yaml
+          oc start-build game-event-handler \
+            --from-dir=serverless/game-event-handler \
+            --follow \
+            --wait \
+            -n navaneethfr-dev
+
+      - name: Update image references in manifests
+        run: |
+          # Get the internal registry image references
+          MAIN_IMAGE=$(oc get istag gambleshi:latest -n navaneethfr-dev -o jsonpath='{.image.dockerImageReference}')
+          HANDLER_IMAGE=$(oc get istag game-event-handler:latest -n navaneethfr-dev -o jsonpath='{.image.dockerImageReference}')
+          echo "Main app image: ${MAIN_IMAGE}"
+          echo "Handler image: ${HANDLER_IMAGE}"
+          sed -i "s|IMAGE_PLACEHOLDER|${MAIN_IMAGE}|g" k8s/deployment.yaml
+          sed -i "s|IMAGE_PLACEHOLDER_HANDLER|${HANDLER_IMAGE}|g" k8s/game-event-handler.yaml
 
       - name: Apply Kubernetes manifests
         run: |
@@ -121,19 +143,20 @@ jobs:
           oc apply -f k8s/route.yaml
           oc apply -f k8s/hpa.yaml
           oc apply -f k8s/pdb.yaml
+          oc apply -f k8s/game-event-handler.yaml
 
-      - name: Wait for rollout
+      - name: Wait for rollouts
         run: |
           oc rollout status deployment/gambleshi -n navaneethfr-dev --timeout=300s
+          oc rollout status deployment/game-event-handler -n navaneethfr-dev --timeout=300s
 
       - name: Verify deployment
         run: |
           echo "=== Pods ==="
           oc get pods -n navaneethfr-dev
           echo ""
-          echo "=== Route ==="
-          oc get route gambleshi -n navaneethfr-dev -o jsonpath='{.spec.host}'
-          echo ""
+          echo "=== Routes ==="
+          oc get routes -n navaneethfr-dev
           echo ""
           echo "=== HPA ==="
           oc get hpa -n navaneethfr-dev
@@ -152,3 +175,4 @@ jobs:
           done
           echo "Smoke test failed after 5 attempts"
           exit 1
+
