@@ -220,7 +220,7 @@ function DinoGame() {
         // 0.99 is 99% RTP (Return To Player) -> 1% house edge
         const pureMultiplier = 0.99 / probability;
 
-        // Floor to 2 decimals like Stake
+        // Floor to 2 decimals like EzBet
         return parseFloat((Math.floor(pureMultiplier * 100) / 100).toFixed(2));
     }, [difficulty]);
 
@@ -922,7 +922,7 @@ function DinoGame() {
                                     <Button type="text" icon={isFullscreen ? <FullscreenExitOutlined /> : <ExpandOutlined />} className="control-btn" onClick={toggleFullscreen} />
                                 </Tooltip>
                             </Space>
-                            <span className="logo" style={{ color: 'var(--text-primary)' }}>Stake</span>
+                            <span className="logo" style={{ color: 'var(--text-primary)' }}>EzBet</span>
                             <Button type="text" icon={<SafetyCertificateOutlined />} className="fairness-btn" onClick={() => setFairnessModalOpen(true)}>
                                 Fairness
                             </Button>

@@ -1,5 +1,5 @@
 /* ===== Auth Modal Styling ===== */
-.stake-auth-modal-root .ant-modal-content {
+.ezbet-auth-modal-root .ant-modal-content {
     background: #0f212e !important;
     border: 1px solid rgba(47, 69, 83, 0.8) !important;
     border-radius: 16px !important;
@@ -31,7 +31,7 @@
     margin-bottom: 6px;
 }
 
-.auth-stake-logo {
+.auth-ezbet-logo {
     font-size: 28px;
     font-weight: 900;
     letter-spacing: -0.5px;

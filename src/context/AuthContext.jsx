@@ -3,8 +3,8 @@ import { useWallet } from './WalletContext'
 
 const AuthContext = createContext(null)
 
-const STORAGE_KEY_USER = 'stake_auth_current_user'
-const STORAGE_KEY_USERS_DB = 'stake_auth_users_db_v2'
+const STORAGE_KEY_USER = 'ezbet_auth_current_user'
+const STORAGE_KEY_USERS_DB = 'ezbet_auth_users_db_v2'
 
 const DEFAULT_AVATARS = [
     '👑', '🚀', '💎', '🔥', '🎲', '⚡', '🦁', '🐺', '🦊', '🐉'
@@ -78,7 +78,7 @@ export function AuthProvider({ children }) {
         const newUser = {
             id: `user-${Date.now()}`,
             username: usernameOrEmail.includes('@') ? usernameOrEmail.split('@')[0] : usernameOrEmail,
-            email: usernameOrEmail.includes('@') ? usernameOrEmail : `${usernameOrEmail}@stake.clone`,
+            email: usernameOrEmail.includes('@') ? usernameOrEmail : `${usernameOrEmail}@ezbet.clone`,
             avatar: DEFAULT_AVATARS[Math.floor(Math.random() * DEFAULT_AVATARS.length)],
             vipTier: 'Bronze',
             joinedDate: 'Today',

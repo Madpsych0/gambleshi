@@ -1,7 +1,7 @@
 import { theme } from 'antd'
 
 export const DEFAULT_PALETTE_ID = 'arcade-blue'
-export const PALETTE_STORAGE_KEY = 'stake_palette_preset'
+export const PALETTE_STORAGE_KEY = 'ezbet_palette_preset'
 
 const arcadeBlue = {
     id: 'arcade-blue',
@@ -19,9 +19,9 @@ const arcadeBlue = {
     },
 }
 
-const stakeOriginal = {
-    id: 'stake-original',
-    name: 'Stake Original',
+const ezbetOriginal = {
+    id: 'ezbet-original',
+    name: 'EzBet Original',
     tokens: {
         bgApp: '#1a2c38', bgHeader: '#0f212e', bgSidebar: '#0f212e', bgMain: '#1a2c38',
         surface1: '#1a2c38', surface2: '#2f4553', surface3: '#3d5564', surfaceHover: '#3d5564',
@@ -67,7 +67,7 @@ const emberGold = {
     },
 }
 
-export const PALETTES = [arcadeBlue, stakeOriginal, midnightPurple, emberGold]
+export const PALETTES = [arcadeBlue, ezbetOriginal, midnightPurple, emberGold]
 
 export function isPaletteId(id) {
     return PALETTES.some((palette) => palette.id === id)

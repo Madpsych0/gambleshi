@@ -1,7 +1,7 @@
 <div align="center">
   <img src="./static/android-chrome-192x192.png" width="100" height="100" alt="Logo">
   <h1>plinko-game</h1>
-  <p>A web Plinko game inspired by Stake.com's Plinko game.</p>
+  <p>A web Plinko game inspired by EzBet.com's Plinko game.</p>
   <p>Play now 👉 <a href="https://plinko-web-game.netlify.app/" target="_blank" rel="noreferrer">https://plinko-web-game.netlify.app/</a></p>
   <img src="./screenshots/desktop-1.jpg" width="800">
 </div>
@@ -10,7 +10,7 @@
 
 Plinko is a classic game where the player drops a ball in a multi-row pin pyramid, where the ball bounces randomly until it reaches the payout bins at the bottom.
 
-This project is a replication of [Stake.com's Plinko game](https://stake.com/casino/games/plinko), created using [Svelte](https://svelte.dev/), [Tailwind CSS](https://tailwindcss.com/), and [matter-js](https://github.com/liabru/matter-js). This website is a fun personal project to learn Svelte, and it is not affiliated with Stake.com in any way. I don't encourage gambling, so that's why I created a free-to-play version of the game.
+This project is a replication of [EzBet.com's Plinko game](https://ezbet.com/casino/games/plinko), created using [Svelte](https://svelte.dev/), [Tailwind CSS](https://tailwindcss.com/), and [matter-js](https://github.com/liabru/matter-js). This website is a fun personal project to learn Svelte, and it is not affiliated with EzBet.com in any way. I don't encourage gambling, so that's why I created a free-to-play version of the game.
 
 ### This project is NON-PROFIT
 
@@ -29,9 +29,9 @@ Please fork this project on your own if you want to build on top of it.
 
 The biggest limitation is that this project calculates the outcome on the client-side, so we cannot pre-determine the outcome before ball drop, nor force the ball to drop to a specific pin.
 
-This is because this project uses [matter-js](https://github.com/liabru/matter-js) as the physics engine. This engine runs on client-side, so the outcome is unknown until the ball reaches the bottom. This is different from Stake.com's implementation, where they calculate the outcome in a back-end server, then drop the ball to the determined pin.
+This is because this project uses [matter-js](https://github.com/liabru/matter-js) as the physics engine. This engine runs on client-side, so the outcome is unknown until the ball reaches the bottom. This is different from EzBet.com's implementation, where they calculate the outcome in a back-end server, then drop the ball to the determined pin.
 
-Due to the physics engine's unpredictability, the actual average return value may be higher than the expected value (sometimes positive return). This is problematic for real-money gambling, since casinos make money by having a [house advantage](https://en.wikipedia.org/wiki/Casino_game#House_advantage), where the expected return is always less than 1. This could be fixed by adjusting the bin payouts, but I stick to the original Stake.com's payout table for simplicity.
+Due to the physics engine's unpredictability, the actual average return value may be higher than the expected value (sometimes positive return). This is problematic for real-money gambling, since casinos make money by having a [house advantage](https://en.wikipedia.org/wiki/Casino_game#House_advantage), where the expected return is always less than 1. This could be fixed by adjusting the bin payouts, but I stick to the original EzBet.com's payout table for simplicity.
 
 ## Development
 

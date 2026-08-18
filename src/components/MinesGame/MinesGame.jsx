@@ -756,7 +756,7 @@ function MinesGame() {
                                 <Button type="text" icon={isFullscreen ? <FullscreenExitOutlined /> : <ExpandOutlined />} className="control-btn" onClick={toggleFullscreen} />
                             </Tooltip>
                         </Space>
-                        <span className="logo" style={{ color: 'var(--text-primary)' }}>Stake</span>
+                        <span className="logo" style={{ color: 'var(--text-primary)' }}>EzBet</span>
                         <Button type="text" icon={<SafetyCertificateOutlined />} className="fairness-btn" onClick={() => setFairnessModalOpen(true)}>
                             Fairness
                         </Button>

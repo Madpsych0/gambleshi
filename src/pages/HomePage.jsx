@@ -24,7 +24,7 @@ function GameCard({ game }) {
     };
 
     const cardContent = <>
-        <div className="stake-card-image">
+        <div className="ezbet-card-image">
             {game.image ? (
                 <img src={game.image} alt={`${game.name} game`} className="game-art-image" />
             ) : (
@@ -34,7 +34,7 @@ function GameCard({ game }) {
             )}
             <div className="card-overlay"><span className="play-btn" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="black"><path d="M8 5v14l11-7z" /></svg></span></div>
         </div>
-        <div className="stake-card-footer">
+        <div className="ezbet-card-footer">
             <div>
                 <span className="game-name">{game.name}</span>
                 {game.rtp && <div className="game-meta"><span>{game.rtp}</span><span>{game.volatility}</span></div>}
@@ -43,13 +43,13 @@ function GameCard({ game }) {
         </div>
     </>
 
-    return <Link to={game.path} className="stake-card" onClick={handleClick}>{cardContent}</Link>
+    return <Link to={game.path} className="ezbet-card" onClick={handleClick}>{cardContent}</Link>
 }
 
 function HomePage() {
     const { isLoggedIn, openAuthModal } = useAuth()
 
-    const focusGames = () => requestAnimationFrame(() => document.getElementById('stake-originals')?.focus())
+    const focusGames = () => requestAnimationFrame(() => document.getElementById('ezbet-originals')?.focus())
 
 
     return (
@@ -74,7 +74,7 @@ function HomePage() {
                             >
                                 {isLoggedIn ? 'Play now' : 'Register & Play'}
                             </button>
-                            <a className="hero-secondary-link" href="#stake-originals" onClick={focusGames}>
+                            <a className="hero-secondary-link" href="#ezbet-originals" onClick={focusGames}>
                                 Browse games <span aria-hidden="true">→</span>
                             </a>
                         </div>
@@ -82,13 +82,13 @@ function HomePage() {
                 </div>
             </section>
 
-            <section id="stake-originals" className="home-section" tabIndex="-1" style={{ paddingTop: '32px' }}>
+            <section id="ezbet-originals" className="home-section" tabIndex="-1" style={{ paddingTop: '32px' }}>
                 <div className="section-header-copy">
                     <p className="section-kicker">Play now</p>
-                    <h2>Stake Originals</h2>
+                    <h2>EzBet Originals</h2>
                     <p>Four fast games. Pick your style and play with virtual ₹ points.</p>
                 </div>
-                <div className="stake-games-grid">
+                <div className="ezbet-games-grid">
                     {games.map((game) => <GameCard key={game.id} game={game} />)}
                 </div>
             </section>

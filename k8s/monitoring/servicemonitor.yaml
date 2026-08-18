@@ -39,4 +39,4 @@ spec:
       scrapeTimeout: 10s
   namespaceSelector:
     matchNames:
-      - gambleshi
+      - navaneethfr-dev

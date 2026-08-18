@@ -107,7 +107,7 @@ class ProvablyFair {
 
     /**
      * Generate a crash point from HMAC result
-     * Uses the same formula as Stake: 
+     * Uses the same formula as EzBet: 
      *   crashPoint = max(1, floor(99 / (1 - result)) / 100)
      * With house edge of ~1%
      * @returns {Promise<number>}
@@ -171,7 +171,7 @@ class ProvablyFair {
         const path = [];
         let binIndex = 0;
 
-        // Follow Stake's exact float calculation
+        // Follow EzBet's exact float calculation
         // Extract 4 bytes at a time per row to convert to a float [0, 1)
         for (let i = 0; i < rowCount; i++) {
             const hexOffset = i * 4 * 2; // Each round needs 4 bytes = 8 hex chars

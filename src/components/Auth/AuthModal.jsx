@@ -67,7 +67,7 @@ export default function AuthModal() {
         setLoading(true)
         try {
             const user = await register(username, email, password, selectedAvatar)
-            showToast('win', 'Account Created!', `Welcome to Stake, ${user.username}!`, 3500)
+            showToast('win', 'Account Created!', `Welcome to EzBet, ${user.username}!`, 3500)
             resetForm()
         } catch (err) {
             setErrorMsg(err.message || 'Registration failed.')
@@ -91,7 +91,7 @@ export default function AuthModal() {
             footer={null}
             centered
             width={440}
-            rootClassName="stake-auth-modal-root"
+            rootClassName="ezbet-auth-modal-root"
             closeIcon={
                 <span className="auth-modal-close-btn" aria-label="Close">
                     ✕
@@ -102,7 +102,7 @@ export default function AuthModal() {
                 {/* Header Logo */}
                 <div className="auth-modal-header">
                     <div className="auth-logo-wrap">
-                        <span className="auth-stake-logo">Stake</span>
+                        <span className="auth-ezbet-logo">EzBet</span>
                         <span className="auth-badge">ORIGINALS</span>
                     </div>
                     <p className="auth-subtitle">

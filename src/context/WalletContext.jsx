@@ -3,9 +3,9 @@ import { createContext, useContext, useState, useCallback, useRef, useEffect } f
 const WalletContext = createContext(null)
 
 const INITIAL_BALANCE = 50.00
-const STORAGE_KEY_BALANCE = 'stake_wallet_balance'
-const STORAGE_KEY_TXS = 'stake_wallet_transactions'
-const STORAGE_KEY_BETS = 'stake_my_bets'
+const STORAGE_KEY_BALANCE = 'ezbet_wallet_balance'
+const STORAGE_KEY_TXS = 'ezbet_wallet_transactions'
+const STORAGE_KEY_BETS = 'ezbet_my_bets'
 
 function getStoredBalance() {
     try {

@@ -1,4 +1,4 @@
-// ===== Stake Crash Game Clone - JavaScript =====
+// ===== EzBet Crash Game Clone - JavaScript =====
 
 // Game State
 const gameState = {
@@ -120,7 +120,7 @@ function drawCurve() {
         updateYAxis(maxMultiplier);
         updateXAxis(elapsed);
 
-        // Create gradient for fill area (orange to darker orange) - matching original Stake
+        // Create gradient for fill area (orange to darker orange) - matching original EzBet
         const fillGradient = ctx.createLinearGradient(
             padding.left, height - padding.bottom,
             padding.left, padding.top

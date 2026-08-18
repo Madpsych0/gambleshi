@@ -84,7 +84,7 @@ Before Task 1, expand this protected list with every additional engine, fairness
 Run:
 
 ```bash
-BASELINE_DIR="${TMPDIR:-/tmp}/stake-mobile-baseline"
+BASELINE_DIR="${TMPDIR:-/tmp}/ezbet-mobile-baseline"
 ls "${TMPDIR:-/tmp}"
 mkdir -p "$BASELINE_DIR"
 git status --short > "$BASELINE_DIR/status-before.txt"
@@ -837,7 +837,7 @@ Start Vite on a dedicated port and Chrome with a clean profile:
 
 ```bash
 npm run dev -- --host 127.0.0.1 --port 5210 --strictPort
-CHROME_PROFILE="${TMPDIR:-/tmp}/stake-mobile-shell"
+CHROME_PROFILE="${TMPDIR:-/tmp}/ezbet-mobile-shell"
 ls "${TMPDIR:-/tmp}"
 "C:/Program Files/Google/Chrome/Application/chrome.exe" --headless=new --disable-gpu --remote-debugging-port=9340 --user-data-dir="$CHROME_PROFILE" --no-first-run --no-default-browser-check http://127.0.0.1:5210/
 ```
@@ -853,7 +853,7 @@ At `390×844`, verify on `/` and one game route: compact wallet opens the same d
 - Test: `mobile-ui.test.mjs`
 
 **Interfaces:**
-- Consumes: existing `.home-page-*`, `.game-category-*`, `.stake-games-grid`, and `.stake-card` markup.
+- Consumes: existing `.home-page-*`, `.game-category-*`, `.ezbet-games-grid`, and `.ezbet-card` markup.
 - Produces: compact hero, horizontal category rail, two-column cards, and one-column cards below `360px`.
 
 - [ ] **Step 1: Add a failing Home CSS contract**
@@ -927,13 +927,13 @@ Add:
         flex: 0 0 auto;
     }
 
-    .stake-games-grid {
+    .ezbet-games-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 @media (max-width: 359px) {
-    .stake-games-grid {
+    .ezbet-games-grid {
         grid-template-columns: 1fr;
     }
 }
@@ -1923,7 +1923,7 @@ Expected: all tests pass and the whitespace check emits no output.
 Run:
 
 ```bash
-BUILD_DIR="${TMPDIR:-/tmp}/stake-mobile-build"
+BUILD_DIR="${TMPDIR:-/tmp}/ezbet-mobile-build"
 ls "${TMPDIR:-/tmp}"
 npm run build -- --outDir "$BUILD_DIR" --emptyOutDir
 ```
@@ -1945,7 +1945,7 @@ Expected: exit 0 with all 35 entries, no runtime exceptions, no overflow, and no
 Run in the same shell or restore the same variable value first:
 
 ```bash
-BASELINE_DIR="${TMPDIR:-/tmp}/stake-mobile-baseline"
+BASELINE_DIR="${TMPDIR:-/tmp}/ezbet-mobile-baseline"
 git status --short -- src/context/WalletContext.jsx src/utils/ProvablyFair.js src/components/PlinkoGame/PlinkoEngine.js src/components/PlinkoGame/Ball.js src/components/PlinkoGame/dropPlinkoBall.js src/components/DinoGame/core public/plinko-outcomes.json scripts/generatePlinkoOutcomes.cjs > "$BASELINE_DIR/protected-status-after.txt"
 git diff --binary -- src/context/WalletContext.jsx src/utils/ProvablyFair.js src/components/PlinkoGame/PlinkoEngine.js src/components/PlinkoGame/Ball.js src/components/PlinkoGame/dropPlinkoBall.js src/components/DinoGame/core public/plinko-outcomes.json scripts/generatePlinkoOutcomes.cjs > "$BASELINE_DIR/protected-diff-after.patch"
 diff -u "$BASELINE_DIR/protected-status-before.txt" "$BASELINE_DIR/protected-status-after.txt"

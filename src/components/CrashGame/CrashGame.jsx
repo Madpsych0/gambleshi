@@ -649,7 +649,7 @@ return (
                         </Tooltip>
                     </Space>
 
-                    <span className="logo" style={{ color: 'var(--text-primary)' }}>Stake</span>
+                    <span className="logo" style={{ color: 'var(--text-primary)' }}>EzBet</span>
 
                     {/* Fairness Button */}
                     <Button

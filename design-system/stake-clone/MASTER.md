@@ -6,7 +6,7 @@
 
 ---
 
-**Project:** Stake Clone
+**Project:** EzBet Clone
 **Generated:** 2026-02-23 22:56:42
 **Category:** Cybersecurity Platform
 

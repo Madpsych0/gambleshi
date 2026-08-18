@@ -1,4 +1,4 @@
-/* ===== CSS Variables - Exact Stake Colors ===== */
+/* ===== CSS Variables - Exact EzBet Colors ===== */
 :root {
     --bg-primary: #1a2c38;
     --bg-secondary: #0f212e;
@@ -842,7 +842,7 @@ body {
     fill: var(--text-secondary);
 }
 
-.stake-logo-small {
+.ezbet-logo-small {
     font-size: 16px;
     font-weight: 700;
     font-style: italic;

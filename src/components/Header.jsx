@@ -73,7 +73,7 @@ function Header({ menuOpen, menuButtonRef, onMenuClick }) {
 
             <div className="header-left">
                 <Link to="/" className="logo-link">
-                    <span className="logo" style={{ color: 'var(--text-primary)' }}>Stake</span>
+                    <span className="logo" style={{ color: 'var(--text-primary)' }}>EzBet</span>
                 </Link>
             </div>
 

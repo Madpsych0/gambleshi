@@ -188,9 +188,9 @@
 .section-header-copy h2 { color: var(--text-primary); font-size: 26px; line-height: 1.15; }
 .section-header-copy > p:last-child { color: var(--text-secondary); font-size: 14px; }
 
-.stake-games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 16px; }
+.ezbet-games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 16px; }
 
-.stake-card {
+.ezbet-card {
     display: flex;
     flex-direction: column;
     min-width: 0;
@@ -200,10 +200,10 @@
     transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.stake-card:hover { transform: translateY(-4px); }
-.stake-card:hover .stake-card-image { border-color: var(--primary); box-shadow: 0 10px 26px rgba(47, 140, 255, 0.22); }
+.ezbet-card:hover { transform: translateY(-4px); }
+.ezbet-card:hover .ezbet-card-image { border-color: var(--primary); box-shadow: 0 10px 26px rgba(47, 140, 255, 0.22); }
 
-.stake-card-image {
+.ezbet-card-image {
     position: relative;
     display: flex;
     align-items: center;
@@ -218,15 +218,15 @@
 
 .game-art-placeholder { width: 46%; height: 46%; color: var(--text-secondary); opacity: 0.55; }
 .game-art-image { width: 100%; height: 100%; object-fit: cover; transition: transform var(--transition-normal); }
-.stake-card:hover .game-art-image { transform: scale(1.04); }
+.ezbet-card:hover .game-art-image { transform: scale(1.04); }
 
 .card-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(7, 20, 38, 0.58); opacity: 0; transition: opacity var(--transition-fast); }
-.stake-card:hover .card-overlay { opacity: 1; }
+.ezbet-card:hover .card-overlay { opacity: 1; }
 .play-btn { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: var(--primary); transform: scale(0.82); transition: transform var(--transition-fast); }
-.stake-card:hover .play-btn { transform: scale(1); }
+.ezbet-card:hover .play-btn { transform: scale(1); }
 .play-btn svg { margin-left: 3px; }
 
-.stake-card-footer { display: flex; min-height: 62px; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 2px 0; }
+.ezbet-card-footer { display: flex; min-height: 62px; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 2px 0; }
 .game-name { display: block; color: var(--text-primary); font-size: 15px; font-weight: 750; }
 .game-meta { display: flex; flex-wrap: wrap; gap: 4px 8px; margin-top: 3px; color: var(--text-secondary); font-size: 11px; font-weight: 600; }
 .game-meta span + span::before { content: '•'; margin-right: 8px; color: var(--text-muted); }
@@ -234,12 +234,12 @@
 .card-play-label span { margin-left: 2px; }
 
 .is-coming-soon { opacity: 0.72; }
-.is-coming-soon .stake-card-image { border-style: dashed; background: linear-gradient(180deg, rgba(47, 140, 255, 0.05), rgba(48, 213, 255, 0.02)), var(--surface-1); }
+.is-coming-soon .ezbet-card-image { border-style: dashed; background: linear-gradient(180deg, rgba(47, 140, 255, 0.05), rgba(48, 213, 255, 0.02)), var(--surface-1); }
 .badge-coming-soon { padding: 4px 7px; border-radius: var(--radius-full); background: var(--cyan-soft); color: var(--text-secondary); font-size: 10px; font-weight: 700; white-space: nowrap; }
 
 .hero-btn:focus-visible,
 .game-category-chip:focus-visible,
-.stake-card:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
+.ezbet-card:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
 
 @media (max-width: 900px) {
     .hero-title {
@@ -262,16 +262,16 @@
     .game-category-nav { padding: 16px 20px 0; }
     .game-category-chip { min-height: 44px; }
     .home-section { padding: 24px 20px 40px; }
-    .stake-games-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .ezbet-games-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     .game-meta { display: block; }
     .game-meta span + span::before { display: none; }
     .game-meta span { display: block; }
-    .stake-card-footer { min-height: 74px; }
+    .ezbet-card-footer { min-height: 74px; }
     .card-play-label { display: none; }
 }
 
 @media (max-width: 359px) {
-    .stake-games-grid { grid-template-columns: 1fr; }
+    .ezbet-games-grid { grid-template-columns: 1fr; }
 }
 
 /* ===== Home Bets Section ===== */

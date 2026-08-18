@@ -72,7 +72,7 @@ export default function MyBetsPage() {
                             <div>
                                 <h1 className="my-bets-title">My Bets & Wallet History</h1>
                                 <p className="my-bets-subtitle">
-                                    Track your live bets, profitability, and game analytics across all Stake Originals.
+                                    Track your live bets, profitability, and game analytics across all EzBet Originals.
                                 </p>
                             </div>
                         </div>
