@@ -59,6 +59,13 @@ export default function AuthModal() {
             setErrorMsg('Passwords do not match.')
             return
         }
+
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+        if (!passwordRegex.test(password)) {
+            setErrorMsg('Password must be at least 8 characters long, and include a letter, number, and special character.')
+            return
+        }
+
         if (!agreeTerms) {
             setErrorMsg('Please agree to the Terms of Service.')
             return
