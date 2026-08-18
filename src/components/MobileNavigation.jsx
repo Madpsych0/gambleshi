@@ -50,7 +50,7 @@ function MobileNavigation({ drawerOpen, onClose, returnFocusRef }) {
                                 <span style={{ fontSize: '24px' }}>{user.avatar || '👑'}</span>
                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                                     <span style={{ fontWeight: '700', color: '#fff', fontSize: '14px' }}>{user.username}</span>
-                                    <span style={{ fontSize: '11px', color: '#00e701' }}>{user.vipTier || 'VIP'} Member</span>
+
                                 </div>
                             </div>
                             <div style={{ display: 'flex', gap: '8px' }}>
@@ -127,10 +127,7 @@ function MobileNavigation({ drawerOpen, onClose, returnFocusRef }) {
                     )}
                 </div>
 
-                <label className="mobile-drawer-field">
-                    <span>Search</span>
-                    <input type="search" placeholder="Search your game" />
-                </label>
+
                 <label className="mobile-drawer-field">
                     <span>Palette</span>
                     <select value={paletteId} onChange={event => setPaletteId(event.target.value)}>
@@ -159,14 +156,7 @@ function MobileNavigation({ drawerOpen, onClose, returnFocusRef }) {
                         🎲 My Bets History
                     </Link>
                 </div>
-                <div className="mobile-coming-soon" aria-label="Coming soon">
-                    {comingSoon.map(label => (
-                        <button key={label} type="button" disabled>
-                            <span>{label}</span>
-                            <small>Coming soon</small>
-                        </button>
-                    ))}
-                </div>
+
             </Drawer>
 
             <nav className="mobile-bottom-nav" aria-label="Primary navigation">

@@ -79,18 +79,18 @@ function Header({ menuOpen, menuButtonRef, onMenuClick }) {
 
             <div className="header-center">
                 <div className="header-wallet">
-                    <button
-                        type="button"
-                        className="mobile-wallet-balance"
-                        aria-label={`Open wallet, balance ${formattedBalance}`}
-                        aria-expanded={showWalletDropdown}
-                        onClick={() => setShowWalletDropdown(!showWalletDropdown)}
-                    >
-                        <InrIcon size={18} fontSize={11} />
-                        <span>₹{formattedBalance}</span>
-                    </button>
-                    {(isGamePage || isLoggedIn) && (
+                    {isLoggedIn && (
                         <>
+                            <button
+                                type="button"
+                                className="mobile-wallet-balance"
+                                aria-label={`Open wallet, balance ${formattedBalance}`}
+                                aria-expanded={showWalletDropdown}
+                                onClick={() => setShowWalletDropdown(!showWalletDropdown)}
+                            >
+                                <InrIcon size={18} fontSize={11} />
+                                <span>₹{formattedBalance}</span>
+                            </button>
                             <div className="wallet-balance-display">
                                 <InrIcon size={18} fontSize={11} />
                                 <span className="wallet-balance-amount">₹{formattedBalance}</span>
